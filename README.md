@@ -1,32 +1,45 @@
 # push-level-discord Install di Termux Android
 
 ```bash
-pkg install git
+pkg upgrade
 ```
 ```bash
-git clone https://github.com/ZANGE21/push-level-discord
+apt upgrade
 ```
 ```bash
 pkg install python
 ```
 ```bash
-apt upgrade && update
+pkg install openssl
 ```
 ```bash
-pkg install openssl
+pkg install git
 ```
 ```bash
 pip install requests colorama
 ```
 ```bash
-cd push-dc
+git clone https://github.com/ZANGE21/up-dc
+```
+```bash
+clear
+```
+```bash
+cd up-dc
+```
+```bash
+ls
+```
+```bash
+nano token.txt
+```
+```bash
+nano pesan.txt
 ```
 ```bash
 nano main.py
 ```
-```bash
-python main.py
-```
+
 simple discord auto-reply bot for leveling and xp grinding
 
 
