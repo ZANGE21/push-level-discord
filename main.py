@@ -1,6 +1,7 @@
 import requests
 import time
-import os                                               
+import os 
+
 def get_last_message_id(channel_id, headers, target_user_id):                                                       r = requests.get(
         f"https://discord.com/api/v9/channels/{channel_id}/messages?limit=5",
         headers=headers
