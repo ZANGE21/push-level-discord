@@ -45,10 +45,11 @@ MY_USER_ID = "PASTE ID LO DISINI"
 
 TARGET_USER_ID = "PASTE ID TARGET DISINI"
 
-paste sesuai
+paste sesuai ID nya, Next code dibawah 👇 untuk mulai
 ```bash
 python main.py
 ```
+CTRL + C untuk Close SC
 
 simple discord auto-reply bot for leveling and xp grinding
 
