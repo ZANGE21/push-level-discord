@@ -1,6 +1,17 @@
 import requests
 import time
-import os 
+import os
+import random
+
+def send_typing(channel_id, headers):
+    try:
+        requests.post(
+            f"https://discord.com/api/v9/channels/{channel_id}/typing",
+            headers=headers,
+            timeout=10
+        )
+    except:
+        pass
 
 def get_last_message_id(channel_id, headers, target_user_id):
     r = requests.get(
@@ -28,8 +39,8 @@ Push Discord Bot - Lock one user
 # Input
 channel_id = input("Masukkan ID channel: ")
 waktu_kirim = int(input("Set Waktu Kirim Pesan (detik): "))
-MY_USER_ID = "PASTE ID KALIAN DISINI"
-TARGET_USER_ID = "PASTE ID TARGET DISINI"
+MY_USER_ID = "ISI TOKEN LO DISINI"
+TARGET_USER_ID = "TOKEN TARGET"
 
 # Clear screen
 os.system('clear')
@@ -50,41 +61,51 @@ headers = {
 print("[+] Bot berjalan...")
 print("[+] Tekan CTRL + C untuk berhenti\n")
 
-# Loop kirim pesan
+# Loop kirim pesan by Zang
+last_replied_id = None
+
 while True:
     try:
         last_id = get_last_message_id(channel_id, headers, TARGET_USER_ID)
 
-        if last_id:
+        # ada pesan baru dari target & belum pernah dibalas
+        if last_id and last_id != last_replied_id:
             payload = {
                 "content": messages[index].strip(),
                 "message_reference": {
                     "message_id": last_id
-                }
-            }
-        else:
-            # kalau target belum chat → kirim biasa / bisa juga di-skip
-            payload = {
-                "content": messages[index].strip()
+                },
+                "allowed_mentions": {"replied_user": False}
             }
 
-        r = requests.post(
-            f"https://discord.com/api/v9/channels/{channel_id}/messages",
-            headers=headers,
-            json=payload
-        )
+            # typing indicator
+            send_typing(channel_id, headers)
+            time.sleep(random.randint(4, 7))
 
-        if r.status_code == 200:
-            print(f"[✓] Pesan terkirim: {messages[index].strip()}")
+            r = requests.post(
+                f"https://discord.com/api/v9/channels/{channel_id}/messages",
+                headers=headers,
+                json=payload,
+                timeout=10
+            )
+
+            if r.status_code == 200:
+                print(f"[✓] Reply terkirim: {messages[index].strip()}")
+                last_replied_id = last_id
+                index = (index + 1) % len(messages)
+                time.sleep(waktu_kirim)
+            else:
+                print(f"[x] Gagal kirim pesan | Status: {r.status_code}")
+                time.sleep(10)
+
         else:
-            print(f"[x] Gagal kirim pesan | Status: {r.status_code}")
-
-        index += 1
-        if index >= len(messages):
-            index = 0
-
-        time.sleep(waktu_kirim)
+            # belum ada pesan baru dari target
+            time.sleep(21)
 
     except KeyboardInterrupt:
         print("\n[!] Bot dihentikan")
         break
+
+    except requests.exceptions.RequestException as e:
+        print(f"[!] Network error: {e}")
+        time.sleep(15)
